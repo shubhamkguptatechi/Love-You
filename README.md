@@ -53,8 +53,7 @@ love-you-cinematic-animation/
 
 Clone the repository:
 
-git clone https://github.com/YOUR-USERNAME/love-you-cinematic-animation.git
-
+git clone https://github.com/shubhamkguptatechi/Love-You.git
 Open the project folder:
 
 cd love-you-cinematic-animation
