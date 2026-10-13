@@ -1,0 +1,6 @@
+{
+  "name": "Éternité — Animated Love You",
+  "description": "A cinematic romantic experience featuring glowing rose-gold handwritten 'Love You' flowing in endless circular motion against a deep burgundy aura.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

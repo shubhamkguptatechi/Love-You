@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#430018"/>
+      <stop offset="60%" stop-color="#24000D"/>
+      <stop offset="100%" stop-color="#150007"/>
+    </radialGradient>
+    <radialGradient id="haloGrad" cx="50%" cy="50%" r="45%">
+      <stop offset="0%" stop-color="#E6395B" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#E6395B" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#24000D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE0B2"/>
+      <stop offset="35%" stop-color="#E6A078"/>
+      <stop offset="70%" stop-color="#F5B292"/>
+      <stop offset="100%" stop-color="#FFE0B2"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGrad)"/>
+
+  <!-- Crimson Ambient Halo -->
+  <circle cx="256" cy="256" r="180" fill="url(#haloGrad)"/>
+
+  <!-- Glowing Heart & Infinite Calligraphic Swirl -->
+  <g filter="url(#glow)">
+    <!-- Base Heart Stroke -->
+    <path d="M 256 160 C 220 100 140 110 120 180 C 95 260 210 330 256 370 C 302 330 417 260 392 180 C 372 110 292 100 256 160 Z"
+          fill="none"
+          stroke="url(#goldGrad)"
+          stroke-width="18"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+    <!-- Inner Calligraphic Cursive Accent -->
+    <path d="M 200 240 Q 230 210 256 240 Q 282 270 312 240"
+          fill="none"
+          stroke="#FFE0B2"
+          stroke-width="10"
+          stroke-linecap="round"/>
+
+    <!-- Sparkle Stars -->
+    <path d="M 360 130 Q 360 145 375 145 Q 360 145 360 160 Q 360 145 345 145 Q 360 145 360 130 Z"
+          fill="#FFE0B2"/>
+    <path d="M 140 330 Q 140 340 150 340 Q 140 340 140 350 Q 140 340 130 340 Q 140 340 140 330 Z"
+          fill="#FFE0B2"/>
+  </g>
+</svg>
