@@ -340,13 +340,13 @@ export const HandwrittenLove: React.FC<HandwrittenLoveProps> = ({
           }}
         >
           <defs>
-            {/* Rose-Gold & Champagne Linear Gradient */}
+            {/* Rose-Gold & Champagne Linear Gradient with fluid theme transition */}
             <linearGradient id="roseGoldScriptGrad" x1="0%" y1="0%" x2="100%" y2="80%">
-              <stop offset="0%" stopColor={theme.penHighlight} />
-              <stop offset="25%" stopColor={theme.penColor} />
-              <stop offset="55%" stopColor="#F5B292" />
-              <stop offset="78%" stopColor={theme.penColor} />
-              <stop offset="100%" stopColor={theme.penHighlight} />
+              <stop offset="0%" stopColor={theme.penHighlight} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+              <stop offset="25%" stopColor={theme.penColor} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+              <stop offset="55%" stopColor={theme.penColor} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+              <stop offset="78%" stopColor={theme.penColor} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+              <stop offset="100%" stopColor={theme.penHighlight} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
             </linearGradient>
 
             {/* Glowing filter for deep atmosphere */}
@@ -391,7 +391,7 @@ export const HandwrittenLove: React.FC<HandwrittenLoveProps> = ({
             opacity={phase === 'phase1_fadein' ? 0 : 0.38}
             style={{
               filter: 'blur(10px)',
-              transition: 'opacity 0.8s ease-in-out'
+              transition: 'opacity 0.8s ease-in-out, stroke 1.2s ease-in-out'
             }}
           />
 
@@ -408,7 +408,7 @@ export const HandwrittenLove: React.FC<HandwrittenLoveProps> = ({
             opacity={phase === 'phase1_fadein' ? 0 : 0.72}
             style={{
               filter: 'blur(3.5px)',
-              transition: 'opacity 0.8s ease-in-out'
+              transition: 'opacity 0.8s ease-in-out, stroke 1.2s ease-in-out'
             }}
           />
 
@@ -440,6 +440,9 @@ export const HandwrittenLove: React.FC<HandwrittenLoveProps> = ({
             strokeDasharray={pathLength}
             strokeDashoffset={writeOffset}
             opacity={phase === 'phase1_fadein' ? 0 : 0.85}
+            style={{
+              transition: 'stroke 1.2s ease-in-out'
+            }}
           />
 
           {/* 5. DYNAMIC GLOWING PEN NIB & SPARKLE STAR (Visible during Phase 3) */}

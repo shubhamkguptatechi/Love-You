@@ -19,11 +19,94 @@ html, body {
   touch-action: manipulation;
 }
 
+/* Rhythmic Heartbeat Breathing Animation (Subtle Scale Pulse & Emotional Warmth) */
+@keyframes heartbeatBreath {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  14% {
+    transform: scale(1.018);
+    filter: brightness(1.03);
+  }
+  24% {
+    transform: scale(1.008);
+    filter: brightness(1.01);
+  }
+  38% {
+    transform: scale(1.026);
+    filter: brightness(1.05);
+  }
+  60% {
+    transform: scale(1.004);
+    filter: brightness(1.005);
+  }
+  80% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+.heartbeat-app-container {
+  transform-origin: center center;
+  animation: heartbeatBreath 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, filter;
+  backface-visibility: hidden;
+}
+
+.heartbeat-paused {
+  animation-play-state: paused !important;
+}
+
+/* Synchronized Heartbeat Indicator Dot */
+@keyframes heartbeatDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+    box-shadow: 0 0 6px rgba(255, 224, 178, 0.4);
+  }
+  14% {
+    transform: scale(1.35);
+    opacity: 1;
+    box-shadow: 0 0 14px rgba(255, 224, 178, 0.9);
+  }
+  24% {
+    transform: scale(1.08);
+    opacity: 0.8;
+    box-shadow: 0 0 8px rgba(255, 224, 178, 0.5);
+  }
+  38% {
+    transform: scale(1.45);
+    opacity: 1;
+    box-shadow: 0 0 18px rgba(230, 57, 91, 0.9);
+  }
+  60% {
+    transform: scale(1.05);
+    opacity: 0.75;
+    box-shadow: 0 0 7px rgba(255, 224, 178, 0.4);
+  }
+}
+
+.animate-heartbeat-dot {
+  animation: heartbeatDot 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 /* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .heartbeat-app-container {
+    animation: none !important;
+    transform: none !important;
+  }
+  .animate-heartbeat-dot {
+    animation: none !important;
   }
 }

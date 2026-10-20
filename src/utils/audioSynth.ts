@@ -105,15 +105,17 @@ class RomanticAudioEngine {
   private scheduleBreathing() {
     if (!this.ctx || !this.filterNode || !this.isPlaying) return;
     const now = this.ctx.currentTime;
-    // Breathing cycle between 260Hz and 580Hz over 6 seconds
+    // Breathing cycle synchronized with the 3.8s heartbeat pulse
     this.filterNode.frequency.cancelScheduledValues(now);
     this.filterNode.frequency.setValueAtTime(this.filterNode.frequency.value, now);
-    this.filterNode.frequency.linearRampToValueAtTime(580, now + 3.5);
-    this.filterNode.frequency.linearRampToValueAtTime(280, now + 7.0);
+    this.filterNode.frequency.linearRampToValueAtTime(460, now + 0.5); // First heartbeat crest
+    this.filterNode.frequency.linearRampToValueAtTime(360, now + 1.0);
+    this.filterNode.frequency.linearRampToValueAtTime(500, now + 1.45); // Second resonant crest
+    this.filterNode.frequency.linearRampToValueAtTime(280, now + 3.8); // Gentle resting exhale
 
     setTimeout(() => {
       if (this.isPlaying) this.scheduleBreathing();
-    }, 7000);
+    }, 3800);
   }
 
   private playChime(freq: number, delayMs: number = 0) {

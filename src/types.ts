@@ -31,6 +31,7 @@ export interface Particle {
   maxLife: number;
   life: number;
   color: string;
+  colorRole?: 'pen' | 'halo' | 'highlight' | 'secondary';
   type: 'heart' | 'sparkle' | 'bokeh' | 'trail';
   rotation: number;
   vRot: number;

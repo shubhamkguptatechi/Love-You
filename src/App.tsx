@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { HandwrittenLove } from './components/HandwrittenLove';
 import { AtmosphereCanvas } from './components/AtmosphereCanvas';
 import { Controls } from './components/Controls';
@@ -117,6 +117,77 @@ export default function App() {
     });
   }, []);
 
+  // Interactive radial light that tracks mouse or touch movement
+  const pointerLightDivRef = useRef<HTMLDivElement | null>(null);
+  const pointerCoordsRef = useRef<{
+    currentX: number;
+    currentY: number;
+    targetX: number;
+    targetY: number;
+    isHovering: boolean;
+  }>({
+    currentX: typeof window !== 'undefined' ? window.innerWidth / 2 : 400,
+    currentY: typeof window !== 'undefined' ? window.innerHeight / 2 : 300,
+    targetX: typeof window !== 'undefined' ? window.innerWidth / 2 : 400,
+    targetY: typeof window !== 'undefined' ? window.innerHeight / 2 : 300,
+    isHovering: false,
+  });
+
+  // Track mouse and touch coordinates across the window with smooth damping
+  useEffect(() => {
+    let animId: number;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      pointerCoordsRef.current.targetX = e.clientX;
+      pointerCoordsRef.current.targetY = e.clientY;
+      pointerCoordsRef.current.isHovering = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        pointerCoordsRef.current.targetX = e.touches[0].clientX;
+        pointerCoordsRef.current.targetY = e.touches[0].clientY;
+        pointerCoordsRef.current.isHovering = true;
+      }
+    };
+
+    const handlePointerLeave = () => {
+      pointerCoordsRef.current.targetX = window.innerWidth / 2;
+      pointerCoordsRef.current.targetY = window.innerHeight / 2;
+      pointerCoordsRef.current.isHovering = false;
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('pointerleave', handlePointerLeave);
+
+    // Continuous 60fps lerp loop for soft fluid glide
+    const renderLoop = () => {
+      const coords = pointerCoordsRef.current;
+      coords.currentX += (coords.targetX - coords.currentX) * 0.08;
+      coords.currentY += (coords.targetY - coords.currentY) * 0.08;
+
+      if (pointerLightDivRef.current) {
+        const x = coords.currentX.toFixed(1);
+        const y = coords.currentY.toFixed(1);
+        const opacity = coords.isHovering ? 0.38 : 0.22;
+        pointerLightDivRef.current.style.background = `radial-gradient(circle 460px at ${x}px ${y}px, ${currentTheme.haloColor} 0%, ${currentTheme.secondaryHalo} 40%, transparent 72%)`;
+        pointerLightDivRef.current.style.opacity = `${opacity}`;
+      }
+
+      animId = requestAnimationFrame(renderLoop);
+    };
+
+    animId = requestAnimationFrame(renderLoop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('pointerleave', handlePointerLeave);
+    };
+  }, [currentTheme]);
+
   // Canvas Click: Spawns heart burst where user clicked
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     setBurstTrigger({
@@ -134,52 +205,75 @@ export default function App() {
       {/* Offline Status Toast */}
       <OfflineIndicator />
 
-      {/* Subtle App Identity Watermark */}
+      {/* Subtle App Identity Watermark with Heartbeat Indicator */}
       <header className="fixed top-5 left-6 z-30 flex items-center gap-2 pointer-events-none opacity-70 hover:opacity-100 transition-opacity">
-        <span className="w-2 h-2 rounded-full bg-[#E6A078] shadow-[0_0_8px_#FFE0B2]" aria-hidden="true" />
+        <span
+          className={`w-2 h-2 rounded-full bg-[#E6A078] ${
+            isPaused ? 'opacity-70' : 'animate-heartbeat-dot'
+          }`}
+          aria-hidden="true"
+        />
         <span className="font-serif text-sm tracking-widest text-[#FFE0B2] uppercase">
           Éternité
         </span>
       </header>
 
-      {/* 1. CINEMATIC BACKGROUND GRADIENT & DARK CHERRY VIGNETTE */}
+      {/* RHYTHMIC HEARTBEAT BREATHING APP CONTAINER (Scale pulse simulating gentle heartbeat) */}
       <div
-        className="absolute inset-0 pointer-events-none transition-colors duration-1000"
-        style={{
-          background: `radial-gradient(circle at 50% 50%, #430018 0%, #24000D 65%, #120006 100%)`,
-        }}
-        aria-hidden="true"
-      />
-
-      {/* 2. SUBTLE CINEMATIC GRAIN / BREATHING SHADOW */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay"
-        style={{
-          backgroundImage: `radial-gradient(#FFE0B2 0.7px, transparent 0.7px)`,
-          backgroundSize: '24px 24px',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* 3. ATMOSPHERIC CANVAS LAYER (Bokeh, particles, sparkles, interactive bursts) */}
-      <AtmosphereCanvas
-        theme={currentTheme}
-        penTip={penTip}
-        onCanvasClick={handleCanvasClick}
-        externalBurstTrigger={burstTrigger}
-      />
-
-      {/* 4. MAIN CENTRAL HANDWRITTEN "LOVE YOU" ANIMATION */}
-      <div className="relative z-20 flex flex-col items-center justify-center pointer-events-none px-4">
-        <HandwrittenLove
-          phase={phase}
-          theme={currentTheme}
-          isPaused={isPaused}
-          trajectoryMode={trajectoryMode}
-          onWritingProgress={setPenTip}
-          onPhaseChange={setPhase}
-          customDedication={dedicationText}
+        className={`absolute inset-0 flex items-center justify-center overflow-hidden heartbeat-app-container ${
+          isPaused ? 'heartbeat-paused' : ''
+        }`}
+      >
+        {/* 1. CINEMATIC BACKGROUND GRADIENT & DARK CHERRY VIGNETTE */}
+        <div
+          className="absolute inset-0 pointer-events-none transition-colors duration-1000"
+          style={{
+            background: `radial-gradient(circle at 50% 50%, #430018 0%, #24000D 65%, #120006 100%)`,
+          }}
+          aria-hidden="true"
         />
+
+        {/* 2. INTERACTIVE RADIAL GRADIENT (Follows mouse / touch movement with soft illumination) */}
+        <div
+          ref={pointerLightDivRef}
+          className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out will-change-[background,opacity]"
+          style={{
+            opacity: 0.22,
+            filter: 'blur(22px)',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* 3. SUBTLE CINEMATIC GRAIN / BREATHING SHADOW */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay"
+          style={{
+            backgroundImage: `radial-gradient(#FFE0B2 0.7px, transparent 0.7px)`,
+            backgroundSize: '24px 24px',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* 3. ATMOSPHERIC CANVAS LAYER (Bokeh, particles, sparkles, interactive bursts) */}
+        <AtmosphereCanvas
+          theme={currentTheme}
+          penTip={penTip}
+          onCanvasClick={handleCanvasClick}
+          externalBurstTrigger={burstTrigger}
+        />
+
+        {/* 4. MAIN CENTRAL HANDWRITTEN "LOVE YOU" ANIMATION */}
+        <div className="relative z-20 flex flex-col items-center justify-center pointer-events-none px-4">
+          <HandwrittenLove
+            phase={phase}
+            theme={currentTheme}
+            isPaused={isPaused}
+            trajectoryMode={trajectoryMode}
+            onWritingProgress={setPenTip}
+            onPhaseChange={setPhase}
+            customDedication={dedicationText}
+          />
+        </div>
       </div>
 
       {/* 5. MINIMAL, REFINED FLOATING CONTROLS DOCK */}
